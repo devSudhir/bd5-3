@@ -1,203 +1,255 @@
-const express = require('express');
-const { resolve } = require('path');
-const { sequelize } = require('./lib/index');
-const { movieModel } = require('./models/movie.model');
-const cors = require('cors');
+const express = require("express");
+const { resolve } = require("path");
+const { sequelize } = require("./lib/index");
+const { movieModel } = require("./models/movie.model");
+const cors = require("cors");
 
 const app = express();
 const port = 3010;
 
-app.use(express.static('static'));
+app.use(express.static("static"));
 app.use(express.json());
 app.use(cors());
 
 const movies = [
   // Unique Bollywood Movies
   {
-    title: 'Dangal',
-    director: 'Nitesh Tiwari',
-    genre: 'Biography',
+    title: "Dangal",
+    director: "Nitesh Tiwari",
+    genre: "Biography",
     release_year: 2016,
     rating: 4.8,
-    actor: 'Aamir Khan',
+    actor: "Aamir Khan",
     box_office_collection: 220,
   },
   {
-    title: 'Baahubali 2: The Conclusion',
-    director: 'S.S. Rajamouli',
-    genre: 'Action',
+    title: "Baahubali 2: The Conclusion",
+    director: "S.S. Rajamouli",
+    genre: "Action",
     release_year: 2017,
     rating: 4.7,
-    actor: 'Prabhas',
+    actor: "Prabhas",
     box_office_collection: 181,
   },
   {
-    title: 'PK',
-    director: 'Rajkumar Hirani',
-    genre: 'Comedy',
+    title: "PK",
+    director: "Rajkumar Hirani",
+    genre: "Comedy",
     release_year: 2014,
     rating: 4.6,
-    actor: 'Aamir Khan',
+    actor: "Aamir Khan",
     box_office_collection: 140,
   },
   {
-    title: 'Bajrangi Bhaijaan',
-    director: 'Kabir Khan',
-    genre: 'Drama',
+    title: "Bajrangi Bhaijaan",
+    director: "Kabir Khan",
+    genre: "Drama",
     release_year: 2015,
     rating: 4.5,
-    actor: 'Salman Khan',
+    actor: "Salman Khan",
     box_office_collection: 130,
   },
   {
-    title: 'Sultan',
-    director: 'Ali Abbas Zafar',
-    genre: 'Drama',
+    title: "Sultan",
+    director: "Ali Abbas Zafar",
+    genre: "Drama",
     release_year: 2016,
     rating: 4.3,
-    actor: 'Salman Khan',
+    actor: "Salman Khan",
     box_office_collection: 120,
   },
   {
-    title: 'Sanju',
-    director: 'Rajkumar Hirani',
-    genre: 'Biography',
+    title: "Sanju",
+    director: "Rajkumar Hirani",
+    genre: "Biography",
     release_year: 2018,
     rating: 4.4,
-    actor: 'Ranbir Kapoor',
+    actor: "Ranbir Kapoor",
     box_office_collection: 120,
   },
   {
-    title: 'Padmaavat',
-    director: 'Sanjay Leela Bhansali',
-    genre: 'Drama',
+    title: "Padmaavat",
+    director: "Sanjay Leela Bhansali",
+    genre: "Drama",
     release_year: 2018,
     rating: 4.2,
-    actor: 'Ranveer Singh',
+    actor: "Ranveer Singh",
     box_office_collection: 112,
   },
   {
-    title: '3 Idiots',
-    director: 'Rajkumar Hirani',
-    genre: 'Comedy',
+    title: "3 Idiots",
+    director: "Rajkumar Hirani",
+    genre: "Comedy",
     release_year: 2009,
     rating: 4.9,
-    actor: 'Aamir Khan',
+    actor: "Aamir Khan",
     box_office_collection: 202,
   },
   {
-    title: 'Chennai Express',
-    director: 'Rohit Shetty',
-    genre: 'Comedy',
+    title: "Chennai Express",
+    director: "Rohit Shetty",
+    genre: "Comedy",
     release_year: 2013,
     rating: 4.0,
-    actor: 'Shah Rukh Khan',
+    actor: "Shah Rukh Khan",
     box_office_collection: 100,
   },
   {
-    title: 'War',
-    director: 'Siddharth Anand',
-    genre: 'Action',
+    title: "War",
+    director: "Siddharth Anand",
+    genre: "Action",
     release_year: 2019,
     rating: 4.3,
-    actor: 'Hrithik Roshan',
+    actor: "Hrithik Roshan",
     box_office_collection: 100,
   },
   {
-    title: 'Kabir Singh',
-    director: 'Sandeep Reddy Vanga',
-    genre: 'Romance',
+    title: "Kabir Singh",
+    director: "Sandeep Reddy Vanga",
+    genre: "Romance",
     release_year: 2019,
     rating: 4.2,
-    actor: 'Shahid Kapoor',
+    actor: "Shahid Kapoor",
     box_office_collection: 80,
   },
   {
-    title: 'Gully Boy',
-    director: 'Zoya Akhtar',
-    genre: 'Drama',
+    title: "Gully Boy",
+    director: "Zoya Akhtar",
+    genre: "Drama",
     release_year: 2019,
     rating: 4.4,
-    actor: 'Ranveer Singh',
+    actor: "Ranveer Singh",
     box_office_collection: 75,
   },
   {
-    title: 'Andhadhun',
-    director: 'Sriram Raghavan',
-    genre: 'Thriller',
+    title: "Andhadhun",
+    director: "Sriram Raghavan",
+    genre: "Thriller",
     release_year: 2018,
     rating: 4.5,
-    actor: 'Ayushmann Khurrana',
+    actor: "Ayushmann Khurrana",
     box_office_collection: 60,
   },
   {
-    title: 'Tumbbad',
-    director: 'Rahi Anil Barve',
-    genre: 'Horror',
+    title: "Tumbbad",
+    director: "Rahi Anil Barve",
+    genre: "Horror",
     release_year: 2018,
     rating: 4.3,
-    actor: 'Sohum Shah',
+    actor: "Sohum Shah",
     box_office_collection: 50,
   },
   {
-    title: 'Stree',
-    director: 'Amar Kaushik',
-    genre: 'Comedy',
+    title: "Stree",
+    director: "Amar Kaushik",
+    genre: "Comedy",
     release_year: 2018,
     rating: 4.0,
-    actor: 'Rajkummar Rao',
+    actor: "Rajkummar Rao",
     box_office_collection: 60,
   },
   {
-    title: 'Badhaai Ho',
-    director: 'Amit Sharma',
-    genre: 'Comedy',
+    title: "Badhaai Ho",
+    director: "Amit Sharma",
+    genre: "Comedy",
     release_year: 2018,
     rating: 4.2,
-    actor: 'Ayushmann Khurrana',
+    actor: "Ayushmann Khurrana",
     box_office_collection: 45,
   },
   {
-    title: 'Article 15',
-    director: 'Anubhav Sinha',
-    genre: 'Drama',
+    title: "Article 15",
+    director: "Anubhav Sinha",
+    genre: "Drama",
     release_year: 2019,
     rating: 4.6,
-    actor: 'Ayushmann Khurrana',
+    actor: "Ayushmann Khurrana",
     box_office_collection: 35,
   },
   {
-    title: 'URI: The Surgical Strike',
-    director: 'Aditya Dhar',
-    genre: 'Action',
+    title: "URI: The Surgical Strike",
+    director: "Aditya Dhar",
+    genre: "Action",
     release_year: 2019,
     rating: 4.7,
-    actor: 'Vicky Kaushal',
+    actor: "Vicky Kaushal",
     box_office_collection: 70,
   },
 ];
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(resolve(__dirname, "pages/index.html"));
 });
 
-app.get('/db_seed', async (req, res) => {
+app.get("/db_seed", async (req, res) => {
   await sequelize.sync({ force: true });
   await movieModel.bulkCreate(movies);
-  res.status(200).json({ message: 'Database seeding successfull' });
+  res.status(200).json({ message: "Database seeding successful" });
 });
 
 async function fetchAllMovies() {
   const response = await movieModel.findAll();
   return response;
 }
-app.get('/movies', async (req, res) => {
+app.get("/movies", async (req, res) => {
   const result = await fetchAllMovies();
   res.status(200).json({ movies: result });
 });
-app.post('/movies/new', async (req, res) => {
+
+async function createNewRecord(newRecord) {
+  const response = await movieModel.create(newRecord);
+  return response;
+}
+app.post("/movies/new", async (req, res) => {
   const newRecord = req.body;
-  console.log('newRecord', newRecord);
+  try {
+    const result = await createNewRecord(newRecord);
+    if (result == null || result == undefined) {
+      res.status(400).json({ error: error.message });
+    }
+    res.status(200).json({ movie: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+async function updateMovieRecord(id, updateRecord) {
+  const existingRecord = await movieModel.findOne({ where: { id } });
+  existingRecord.set(updateRecord);
+  const response = await existingRecord.save();
+  return response;
+}
+
+app.post("/movies/update/:id", async (req, res) => {
+  const updateRecord = req.body;
+  const id = parseInt(req.params.id);
+  try {
+    const result = await updateMovieRecord(id, updateRecord);
+    if (result == null || result == undefined) {
+      res.status(400).json({ error: error.message });
+    }
+    res.status(200).json({ movie: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+async function deleteMovieRecord(deleteRecord) {
+  const response = await movieModel.destroy({ where: deleteRecord });
+  return response;
+}
+
+app.post("/movies/delete", async (req, res) => {
+  const deleteRecord = req.body;
+  try {
+    const result = await deleteMovieRecord(deleteRecord);
+    if (result == null || result == undefined) {
+      res.status(400).json({ error: error.message });
+    }
+    res.status(200).json({ movie: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {
